@@ -121,8 +121,22 @@ orderTemplates = [ [ 1, 1, 2], [1, 2, 3], [1, 2, 3, 3] ]
 def handleOrder(orderID):
 	print "Handling order %d" % orderID
 	orderIngredients = orderTemplates[orderID]
-	for ingredient in orderIngredients:
-		useIngredient(ingredient)
+	
+	notEnough = False
+	for ingredientID in orderIngredients:
+		if ingredients[ingredientID].amount < 5:
+			notEnough = True
+			timeDelta = datetime.datetime.now() - ingredients[ingredientID].lastRestockTimestamp
+			if timeDelta.total_seconds() > 10:
+				restockIngredient(ingredientID)
+
+	if notEnough:
+		actionsQ.put(Action(ORDER_PRIORITY,ORDER,orderID))
+		return
+
+	for ingredientID in orderIngredients:
+		useIngredient(ingredientID)
+
 	finishOrder()
 
 def handleRestock(ingredientID):
@@ -152,10 +166,6 @@ def restockIngredient(ingredientID):
 # and restock ingredient if necessary
 def useIngredient(ingredientID):
 	addIngredientToOrder(ingredientID)
-	if ingredients[ingredientID].amount < 5:
-		timeDelta = datetime.datetime.now() - ingredients[ingredientID].lastRestockTimestamp
-		if timeDelta.total_seconds() > 10:
-			restockIngredient(ingredientID)
 
 
 # initialize ingredients tracking
@@ -164,11 +174,11 @@ ingredientRestockAmount = [ 3, 10, 10, 10, 3, 3]
 
 
 # TEMP
-actionsQ.put(Action(ORDER_PRIORITY,ORDER,1))
-actionsQ.put(Action(ORDER_PRIORITY,ORDER,1))
-actionsQ.put(Action(ORDER_PRIORITY,ORDER,0))
-actionsQ.put(Action(ORDER_PRIORITY,ORDER,2))
-actionsQ.put(Action(ORDER_PRIORITY,ORDER,2))
+# actionsQ.put(Action(ORDER_PRIORITY,ORDER,1))
+# actionsQ.put(Action(ORDER_PRIORITY,ORDER,1))
+# actionsQ.put(Action(ORDER_PRIORITY,ORDER,0))
+# actionsQ.put(Action(ORDER_PRIORITY,ORDER,2))
+# actionsQ.put(Action(ORDER_PRIORITY,ORDER,2))
 # actionsQ.put(Action(RESTOCK_PRIORITY,RESTOCK,5))
 
 
@@ -182,6 +192,9 @@ skipIntro()
 
 # run loop
 while True:
+	orderID = input("Order ID: ")
+	actionsQ.put(Action(ORDER_PRIORITY,ORDER,orderID))
+
 	if (datetime.datetime.now() - lastPlateClearedTimestamp).total_seconds() > 20:
 		actionsQ.put(Action(PLATES_PRIORITY,CLEAR_PLATES,0))
 		lastPlateClearedTimestamp = datetime.datetime.now()
