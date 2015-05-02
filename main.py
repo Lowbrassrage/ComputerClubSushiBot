@@ -124,7 +124,7 @@ def handleOrder(orderID):
 	
 	notEnough = False
 	for ingredientID in orderIngredients:
-		if ingredients[ingredientID].amount < 5:
+		if ingredients[ingredientID].amount <= 5:
 			notEnough = True
 			timeDelta = datetime.datetime.now() - ingredients[ingredientID].lastRestockTimestamp
 			if timeDelta.total_seconds() > 10:
@@ -192,8 +192,12 @@ skipIntro()
 
 # run loop
 while True:
-	orderID = input("Order ID: ")
-	actionsQ.put(Action(ORDER_PRIORITY,ORDER,orderID))
+	# orderID = input("Order ID: ")
+	# actionsQ.put(Action(ORDER_PRIORITY,ORDER,orderID))
+
+	# pyautogui.moveTo(baseX + 310, baseY + 205)
+	# pyautogui.click()
+
 
 	if (datetime.datetime.now() - lastPlateClearedTimestamp).total_seconds() > 20:
 		actionsQ.put(Action(PLATES_PRIORITY,CLEAR_PLATES,0))
