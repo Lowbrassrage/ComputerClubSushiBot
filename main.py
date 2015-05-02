@@ -7,29 +7,30 @@ import pyautogui
 
 baseX = 20
 baseY = 240
+mouseSpeed = 0.5
 
 def clearPlates( ):
 	for i in range(0, 6):
-		pyautogui.moveTo(baseX + 80 + (100 * i), baseY + 210)
+		pyautogui.moveTo(baseX + 80 + (100 * i), baseY + 210, mouseSpeed)
 		pyautogui.click()
 
 def finishOrder( ):
-	pyautogui.moveTo(baseX + 200, baseY + 380)
+	pyautogui.moveTo(baseX + 200, baseY + 380, mouseSpeed)
 	pyautogui.click()
 
 def buyIngredient( ID ):
-	pyautogui.moveTo(baseX + 555, baseY + 360)
+	pyautogui.moveTo(baseX + 555, baseY + 360, mouseSpeed)
 	pyautogui.click()
 
 	if ID == 1:
-		pyautogui.moveTo(baseX + 497, baseY + 290)
+		pyautogui.moveTo(baseX + 497, baseY + 290, mouseSpeed)
 		pyautogui.click()
 
-		pyautogui.moveTo(baseX + 542, baseY + 279)
+		pyautogui.moveTo(baseX + 542, baseY + 279, mouseSpeed)
 		pyautogui.click()
 
 	else:
-		pyautogui.moveTo(baseX + 494, baseY + 269)
+		pyautogui.moveTo(baseX + 494, baseY + 269, mouseSpeed)
 		pyautogui.click()
 
 		if (ID == 0) or (ID == 2) or (ID == 4):
@@ -44,10 +45,10 @@ def buyIngredient( ID ):
 		else:
 			newY = baseY + 330
 
-		pyautogui.moveTo(newX, newY)
+		pyautogui.moveTo(newX, newY, mouseSpeed)
 		pyautogui.click()
 
-	pyautogui.moveTo(baseX + 490, baseY + 293)
+	pyautogui.moveTo(baseX + 490, baseY + 293, mouseSpeed)
 	pyautogui.click()
 
 def addIngredient( ID ):
@@ -63,29 +64,29 @@ def addIngredient( ID ):
 	else:
 		newY = baseY + 430
 
-	pyautogui.moveTo(newX, newY)
+	pyautogui.moveTo(newX, newY, mouseSpeed)
 	pyautogui.click()
 
 def skipIntro( ):
 
 	#play
-	pyautogui.moveTo(baseX + 310, baseY + 205)
+	pyautogui.moveTo(baseX + 310, baseY + 205, mouseSpeed)
 	pyautogui.click()
 
 	#continue 1
-	pyautogui.moveTo(baseX + 312, baseY + 387)
+	pyautogui.moveTo(baseX + 312, baseY + 387, mouseSpeed)
 	pyautogui.click()
 
 	#continue 2
-	pyautogui.moveTo(baseX + 312, baseY + 387)
+	pyautogui.moveTo(baseX + 312, baseY + 387, mouseSpeed)
 	pyautogui.click()
 
 	#skip
-	pyautogui.moveTo(baseX + 578, baseY + 447)
+	pyautogui.moveTo(baseX + 578, baseY + 447, mouseSpeed)
 	pyautogui.click()
 
 	#continue 3
-	pyautogui.moveTo(baseX + 312, baseY + 387)
+	pyautogui.moveTo(baseX + 312, baseY + 387, mouseSpeed)
 	pyautogui.click()
 
 
@@ -118,7 +119,7 @@ class Ingredient:
 orderTemplates = [ [ 1, 1, 2], [1, 2, 3], [1, 2, 3, 3] ]
 
 def handleOrder(orderID):
-	print "Handling order"
+	print "Handling order %d" % orderID
 	orderIngredients = orderTemplates[orderID]
 	for ingredient in orderIngredients:
 		useIngredient(ingredient)
@@ -163,8 +164,8 @@ ingredientRestockAmount = [ 3, 10, 10, 10, 3, 3]
 
 
 # TEMP
-actionsQ.put(Action(ORDER_PRIORITY,ORDER,0))
-actionsQ.put(Action(ORDER_PRIORITY,ORDER,0))
+actionsQ.put(Action(ORDER_PRIORITY,ORDER,1))
+actionsQ.put(Action(ORDER_PRIORITY,ORDER,1))
 actionsQ.put(Action(ORDER_PRIORITY,ORDER,0))
 actionsQ.put(Action(ORDER_PRIORITY,ORDER,2))
 actionsQ.put(Action(ORDER_PRIORITY,ORDER,2))
