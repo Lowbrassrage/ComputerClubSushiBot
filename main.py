@@ -117,6 +117,7 @@ class Ingredient:
 
 
 orderTemplates = [ [ 1, 1, 2], [1, 2, 3], [1, 2, 3, 3] ]
+orderImageHashes = [  ]
 
 def handleOrder(orderID):
 	print "Handling order %d" % orderID
@@ -173,6 +174,16 @@ ingredients = [ Ingredient(5), Ingredient(10), Ingredient(10), Ingredient(10), I
 ingredientRestockAmount = [ 3, 10, 10, 10, 3, 3]
 
 
+def orderForImageHash(img):
+	imgHash = img.tobytes()
+	print imgHash
+
+	# for index, imageHash in orderImageHashes:
+	# 	if imageHash == imgHash:
+	# 		return index
+
+	return -1
+
 # TEMP
 # actionsQ.put(Action(ORDER_PRIORITY,ORDER,1))
 # actionsQ.put(Action(ORDER_PRIORITY,ORDER,1))
@@ -190,6 +201,10 @@ pyautogui.click()
 
 skipIntro()
 
+# 58 + baseX (101 * i), 50 + baseY, 40, 35
+orderRegions = [ (baseX + 38, baseY + 50, 40, 35), (baseX + 139, baseY + 50, 40, 35), (baseX + 240, baseY + 50, 40, 35), (baseX + 341, baseY + 50, 40, 35), (baseX + 442, baseY + 50, 40, 35), (baseX + 543, baseY + 50, 40, 35) ]
+currentCustomers = [ -1, -1, -1, -1, -1, -1 ]
+
 # run loop
 while True:
 	# orderID = input("Order ID: ")
@@ -197,6 +212,16 @@ while True:
 
 	# pyautogui.moveTo(baseX + 310, baseY + 205)
 	# pyautogui.click()
+
+	# check for customer orders
+	for index, region in orderRegions:
+		img = pyautogui.screenshot(region)
+		orderID = orderForImageHash(img)
+
+		if orderID != currentCustomers[index]:
+			currentCustomers[index] = orderID
+			if orderID != -1:
+				actionsQ.put(Action(ORDER_PRIORITY,ORDER,orderID))
 
 
 	if (datetime.datetime.now() - lastPlateClearedTimestamp).total_seconds() > 20:
