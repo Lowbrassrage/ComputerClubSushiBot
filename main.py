@@ -141,6 +141,11 @@ def handleOrder(orderID):
 	finishOrder()
 
 def handleRestock(ingredientID):
+	timeDelta = datetime.datetime.now() - programStartTime
+	if timeDelta.total_seconds() < 40:
+		actionsQ.put(Action(RESTOCK_PRIORITY,RESTOCK,ingredientID))
+		return
+
 	print "Restocking ingredient %d" % ingredientID
 
 	buyIngredient(ingredientID)
@@ -206,6 +211,8 @@ skipIntro()
 # 58 + baseX (101 * i), 50 + baseY, 40, 35
 orderRegions = [ (baseX + 38, baseY + 50, 40, 35), (baseX + 139, baseY + 50, 40, 35), (baseX + 240, baseY + 50, 40, 35), (baseX + 341, baseY + 50, 40, 35), (baseX + 442, baseY + 50, 40, 35), (baseX + 543, baseY + 50, 40, 35) ]
 currentCustomers = [ -1, -1, -1, -1, -1, -1 ]
+
+programStartTime = datetime.datetime.now()
 
 # run loop
 while True:
